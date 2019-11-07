@@ -12,6 +12,6 @@
 
 void initSCI(uint32_t base, uint32_t lspclkHz, uint32_t baud);
 void sendData(uint32_t base, uint16_t* ch, int length);
-char* getData(uint32_t base, uint16_t* ch, int length);
+//char* getData(uint32_t base, uint16_t* ch, int length);
 
 #endif /* SCI_ETCM_H_ */

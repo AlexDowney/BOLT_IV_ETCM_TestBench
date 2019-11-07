@@ -18,9 +18,7 @@ void sendData(uint32_t base, uint16_t* ch, int length)
 {
     SCI_writeCharArray(base, ch, length);
 }
-char* getData(uint32_t base, uint16_t* ch, int length)
-{
-    return SCI_readCharArray(base, ch, length);
-}
-
-#endif /* SCI_ETCM_C_ */
+//char getData(uint32_t base, uint16_t* ch, int length)
+//{
+//    return SCI_readCharArray(base, ch, length);
+//}

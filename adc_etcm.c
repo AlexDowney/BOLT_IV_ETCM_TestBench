@@ -33,7 +33,26 @@ void initEPWM(void)
 //Initialize ADC SOC
 void initADCSOC(void)
 {
+//    ADC_setupSOC(ADCA_BASE, ADC_SOC_NUMBER0, ADC_TRIGGER_CPU1_TINT0,
+//                 ADC_CH_ADCIN0, 15);
+    ADC_setupSOC(ADCA_BASE, ADC_SOC_NUMBER0, ADC_TRIGGER_SW_ONLY,
+                 ADC_CH_ADCIN0, 15);
+    ADC_setInterruptSource(ADCA_BASE, ADC_INT_NUMBER1, ADC_SOC_NUMBER0);
+    ADC_enableInterrupt(ADCA_BASE, ADC_INT_NUMBER1);
+    ADC_clearInterruptStatus(ADCA_BASE, ADC_INT_NUMBER1);
+}
 
+uint16_t getADCVal(void)
+{
+    ADC_forceSOC(ADCA_BASE, ADC_SOC_NUMBER0);
+    ADC_forceSOC(ADCA_BASE, ADC_SOC_NUMBER1);
+
+    while(ADC_getInterruptStatus(ADCA_BASE, ADC_INT_NUMBER1) == false)
+    {
+    }
+    ADC_clearInterruptStatus(ADCA_BASE, ADC_INT_NUMBER1);
+
+    return ADC_readResult(ADCARESULT_BASE, ADC_SOC_NUMBER1);
 }
 
 //send torque request to motor controller
