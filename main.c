@@ -51,28 +51,27 @@ void main(void)
 
 void run(void)
 {
-    int torque_request = 0; // likely to change type
     lightState l = LIGHTON;
     while (1)
     {
-        uint16_t a = getADCVal();
+        uint16_t torque_request = getADCVal(); // likely to change type
         switch(l)
         {
         case LIGHTOFF:
-            if (a > 3000)
+            if (torque_request > 3000)
             {
                 l = LIGHTON;
-                GPIO_writePin(29, 1);
+                GPIO_writePin(61, 1);
             }
         case LIGHTON:
-            if (a < 1500)
+            if (torque_request < 1500)
             {
                 l = LIGHTOFF;
-                GPIO_writePin(29, 0);
+                GPIO_writePin(61, 0);
             }
         }
 
-
+        char r = getData(SCIA_BASE);
         // Pull in sensor data to local variables
         // This will use getters inside the peripheral .h/.c files
 
@@ -89,13 +88,14 @@ void init(void)
 {
     Device_init();
     Device_initGPIO();
-    GPIO_setDirectionMode(29, GPIO_DIR_MODE_OUT);
-    GPIO_writePin(29, 1);
+    GPIO_setDirectionMode(61, GPIO_DIR_MODE_OUT);
+    GPIO_writePin(61, 1);
     initInterrupt();
     initLookup();
     initADC();
     initEPWM();
     initADCSOC();
+    initSCI(SCIA_BASE, DEVICE_LSPCLK_FREQ, 9600);
 
     addInterrupt(&cpuTimer0ISR, INT_TIMER0);
     initTimer(CPUTIMER0_BASE, 10000000, 0);
