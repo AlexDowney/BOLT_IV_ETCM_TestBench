@@ -10,7 +10,8 @@
 
 #include "driverlib.h"
 
-void initSCI(uint32_t base, uint32_t lspclkHz, uint32_t baud);
+//void initSCI(uint32_t base, uint32_t lspclkHz, uint32_t baud);
+void initSCIFIFO(uint32_t base);
 void sendData(uint32_t base, uint16_t ch);
 char getData(uint32_t base);
 

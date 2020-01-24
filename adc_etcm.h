@@ -12,7 +12,7 @@
 #include "device.h"
 
 void initADC(void);
-void initEPWM(void);
+//void initEPWM(void);
 void initADCSOC(void);
 uint16_t getADCVal(void);
 __interrupt void adcA0ISR(void);
