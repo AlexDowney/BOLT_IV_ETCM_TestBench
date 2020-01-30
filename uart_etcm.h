@@ -24,6 +24,8 @@ void SCItest(void);
 void SCIreadFifo(uint16_t *dataBuf, uint8_t FIFOlength);
 uint8_t SCIgetFifoLength(void);
 void initSCIwithFIFO(void);
+void SCIsend(char c);
+char SCIreceive();
 
 
 #endif /* UART_ETCM_H_ */

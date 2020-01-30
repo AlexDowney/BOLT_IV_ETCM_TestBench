@@ -13,18 +13,18 @@
  */
 void initSCI(void){
     // GPIO TX
-    //GPIO_setMasterCore(GPIO_SCITX, GPIO_CORE_CPU1);
+    GPIO_setMasterCore(GPIO_SCITX, GPIO_CORE_CPU1);
     GPIO_setPinConfig (GPIO_CFG_SCITX);
     GPIO_setPadConfig(GPIO_SCITX, GPIO_PIN_TYPE_STD);
     GPIO_setDirectionMode(GPIO_SCITX, GPIO_DIR_MODE_OUT);
-    //GPIO_setQualificationMode(GPIO_SCITX, GPIO_QUAL_ASYNC);
+    GPIO_setQualificationMode(GPIO_SCITX, GPIO_QUAL_ASYNC);
 
     //GPIO RX
-    //GPIO_setMasterCore(GPIO_SCIRX, GPIO_CORE_CPU1);
+    GPIO_setMasterCore(GPIO_SCIRX, GPIO_CORE_CPU1);
     GPIO_setPinConfig (GPIO_CFG_SCIRX);
     GPIO_setPadConfig(GPIO_SCIRX, GPIO_PIN_TYPE_STD);
     GPIO_setDirectionMode(GPIO_SCIRX, GPIO_DIR_MODE_IN);
-    //GPIO_setQualificationMode(GPIO_SCIRX, GPIO_QUAL_ASYNC);
+    GPIO_setQualificationMode(GPIO_SCIRX, GPIO_QUAL_ASYNC);
 
     // configure module
     // 8N1
@@ -34,6 +34,16 @@ void initSCI(void){
 
     // FIFO
     SCI_disableFIFO(SCI_BASE);
+
+    SCI_performSoftwareReset(SCIA_BASE);
+
+    SCI_resetChannels(SCI_BASE);
+    SCI_resetRxFIFO(SCI_BASE);
+    SCI_resetTxFIFO(SCI_BASE);
+    SCI_clearInterruptStatus(SCI_BASE, SCI_INT_TXFF | SCI_INT_RXFF);
+    SCI_enableFIFO(SCI_BASE);
+    SCI_enableModule(SCI_BASE);
+    SCI_performSoftwareReset(SCI_BASE);
 
     //SCI_disableInterrupt(SCI_BASE, SCI_INT_RXERR);
 
@@ -89,9 +99,9 @@ uint8_t SCIgetFifoLength(void){
 
 void SCIsend(char c)
 {
-    SCI_writeCharBlockingNonFIFO(SCI_BASE, c);
+    SCI_writeCharBlockingFIFO(SCI_BASE, c);
 }
-char SCIrecieve()
+char SCIreceive()
 {
-    return SCI_readCharBlockingNonFIFO(SCI_BASE);
+    return SCI_readCharBlockingFIFO(SCI_BASE);
 }

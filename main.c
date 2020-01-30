@@ -66,6 +66,26 @@ void run(void)
         //What measures suspension travel?
         //Whats the plan for a UI
 
+        char a = 'a';
+        unsigned int c = 0;
+        for (c = 0; c < 26; c++)
+        {
+            SCIsend(a + c);
+            char b = SCIreceive();
+
+            if (b == a + c)
+            {
+                GPIO_writePin(0, 0);
+                GPIO_writePin(2, 1);
+            }
+            else
+            {
+                GPIO_writePin(0, 1);
+                GPIO_writePin(2, 0);
+                c = 0;
+            }
+        }
+
         switch(t)
         {
         case INPUT:
@@ -114,10 +134,12 @@ void init(void)
 {
     Device_init();
     Device_initGPIO();
-    GPIO_setPinConfig(GPIO_0_EPWM1A);
-    GPIO_setPinConfig(GPIO_2_EPWM2A);
+    //    GPIO_setPinConfig(GPIO_0_EPWM1A);
+    //    GPIO_setPinConfig(GPIO_2_EPWM2A);
+    GPIO_setDirectionMode(0, GPIO_DIR_MODE_OUT);
+    GPIO_setDirectionMode(2, GPIO_DIR_MODE_OUT);
     GPIO_setDirectionMode(61, GPIO_DIR_MODE_OUT);
-    GPIO_writePin(61, 1);
+    GPIO_writePin(61, 0);
     initInterrupt();
     initLookup();
     initADC();
@@ -132,6 +154,7 @@ void init(void)
     startTimer(CPUTIMER0_BASE);
     EINT;
     ERTM;
+    GPIO_writePin(61,1);
 }
 
 //Initialize lookup tables
