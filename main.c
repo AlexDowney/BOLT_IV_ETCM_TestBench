@@ -56,7 +56,6 @@ void main(void)
 
 void run(void)
 {
-    //lightState l = LIGHTON;
     testState t = INPUT;
     while (1)
     {
@@ -99,34 +98,6 @@ void run(void)
             t = INPUT;
             break;
         }
-
-//        uint16_t torque_request = getADCVal(); // ADCIN0 == 30
-//        switch(l)
-//        {
-//        case LIGHTOFF:
-//            if (torque_request > 3000)
-//            {
-//                l = LIGHTON;
-//                GPIO_writePin(61, 1); //J2 19
-//            }
-//        case LIGHTON:
-//            if (torque_request < 1500)
-//            {
-//                l = LIGHTOFF;
-//                GPIO_writePin(61, 0);
-//            }
-//        }
-
-        // char r = getData(SCIA_BASE);
-        // Pull in sensor data to local variables
-        // This will use getters inside the peripheral .h/.c files
-
-        // Follow lookup table logic
-        // Specific logic TBD
-        // Carry out any calculations
-
-        // Send torque request to motor
-        //requestTorque(torque_request);
     }
 }
 //Initialize, runs all initialization functions
