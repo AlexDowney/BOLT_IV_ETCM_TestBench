@@ -17,5 +17,6 @@ void initADCSOC(void);
 uint16_t getADCVal(void);
 __interrupt void adcA0ISR(void);
 
+#define ADC_BASE ADCA_BASE
 
 #endif /* ADC_ETCM_H_ */
