@@ -55,6 +55,7 @@ void main(void)
 
 void run(void)
 {
+    //ADCINA0/DACOUTA - J3 30
     testState t = INPUT;
     buttonState outButton = UP;
     buttonState resetButton = UP;
@@ -65,22 +66,10 @@ void run(void)
         //I just need to send data that mimics the IMU not know how to use it right?
         //What measures suspension travel?
         //Whats the plan for a UI
-        char b = SCIreceive();
 
-        if (b == 'b')
-        {
-            GPIO_writePin( , 1);
-            GPIO_writePin( , 0);
-        }
-        else
-        {
-            GPIO_writePin( , 0);
-            GPIO_writePin( , 1);
-        }
-
-        uint16_t suspensionTravel = getADCVal();
-        uint16_t pSwitches[3];
-        uint16_t bSwitches[2];
+        uint16_t suspensionTravel = 0;
+        uint16_t pSwitches[3] = {0,0,0};
+        uint16_t bSwitches[2] = {0,0};
         uint16_t tSwitch = 0;
         buttonStateMachine(resetButtonStatus, &resetButton);
         buttonStateMachine(outButtonStatus, &outButton);
@@ -89,15 +78,20 @@ void run(void)
         case INPUT:
             if (outButton == DOWN)
             {
-                /*GPIO_writePin(, pSwitches[0]); //Profile Switches
-                GPIO_writePin(, pSwitches[1]);
-                GPIO_writePin(, pSwitches[2]);
+                GPIO_writePin(67, pSwitches[0]); //Profile Switches (J1 5,6,7)
+                GPIO_writePin(111, pSwitches[1]);
+                GPIO_writePin(60, pSwitches[2]);
 
-                GPIO_writePin(, bSwitches[0]); //Brake Switches
-                GPIO_writePin(, bSwitches[1]);
+                GPIO_writePin(61, bSwitches[0]); //Brake Switches (J2 19, 18)
+                GPIO_writePin(123, bSwitches[1]);
 
-                GPIO_writePin(, tSwitch); //Throttle Closed Switch*/
+                GPIO_writePin(122, tSwitch); //Throttle Closed Switch (J2 17)
                 requestTorque(suspensionTravel); //ACTING AS SUSPENSION TRAVEL SENSOR HERE
+
+                //Calculate PWM Signal
+                //setCounterCompareAValue1();
+                //setCounterCompareAValue2();
+
                 t = OUTPUT;
             }
             break;

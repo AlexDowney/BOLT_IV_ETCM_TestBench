@@ -6,6 +6,7 @@
  */
 
 #include "gpio.h"
+#include "driverlib.h"
 
 #ifndef GPIO_ETCM_H_
 #define GPIO_ETCM_H_

@@ -8,13 +8,17 @@
 
 void initGPIO()
 {
-//    GPIO_setDirectionMode( , GPIO_DIR_MODE_OUT);
-//    GPIO_setDirectionMode( , GPIO_DIR_MODE_OUT);
-//    GPIO_setDirectionMode( , GPIO_DIR_MODE_OUT);
-//    GPIO_setDirectionMode( , GPIO_DIR_MODE_OUT);
-//    GPIO_setDirectionMode( , GPIO_DIR_MODE_OUT);
-//
-//    GPIO_setDirectionMode( , GPIO_DIR_MODE_IN);
+    GPIO_setDirectionMode(67, GPIO_DIR_MODE_OUT);
+    GPIO_setDirectionMode(111, GPIO_DIR_MODE_OUT);
+    GPIO_setDirectionMode(60, GPIO_DIR_MODE_OUT);
+    GPIO_setDirectionMode(61, GPIO_DIR_MODE_OUT);
+    GPIO_setDirectionMode(123, GPIO_DIR_MODE_OUT);
+    GPIO_setDirectionMode(122, GPIO_DIR_MODE_OUT);
+
+    GPIO_setPinConfig(GPIO_0_EPWM1A);
+    GPIO_setPinConfig(GPIO_2_EPWM2A);
+
+    //GPIO_setDirectionMode(, GPIO_DIR_MODE_IN);
 }
 void sampleGPIO(char* status)
 {
