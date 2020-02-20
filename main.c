@@ -67,7 +67,7 @@ void run(void)
         //What measures suspension travel?
         //Whats the plan for a UI
 
-        uint16_t suspensionTravel = 0;
+        uint16_t suspensionTravel[2] = {75,0};
         uint16_t pSwitches[3] = {0,0,0};
         uint16_t bSwitches[2] = {0,0};
         uint16_t tSwitch = 0;
@@ -76,7 +76,7 @@ void run(void)
         switch(t)
         {
         case INPUT:
-            if (outButton == DOWN)
+            if (outButton == UP)
             {
                 GPIO_writePin(67, pSwitches[0]); //Profile Switches (J1 5,6,7)
                 GPIO_writePin(111, pSwitches[1]);
@@ -86,7 +86,11 @@ void run(void)
                 GPIO_writePin(123, bSwitches[1]);
 
                 GPIO_writePin(122, tSwitch); //Throttle Closed Switch (J2 17)
-                requestTorque(suspensionTravel); //ACTING AS SUSPENSION TRAVEL SENSOR HERE
+
+                float request = (150 - suspensionTravel[0]) * (3.0/150);
+
+                setDACOutputVoltage(request); //ACTING AS SUSPENSION TRAVEL SENSOR HERE
+                //setDACOutputVoltage((150 - suspensionTravel[1]) * (5/150)); //ACTING AS SUSPENSION TRAVEL SENSOR HERE
 
                 //Calculate PWM Signal
                 //setCounterCompareAValue1();
