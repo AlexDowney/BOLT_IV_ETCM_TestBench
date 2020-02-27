@@ -30,6 +30,8 @@
 #include "gpio_etcm.h"
 #include "interrupt_etcm.h"
 #include "epwm_etcm.h"
+#include <stdlib.h>
+#include "string.h"
 
 typedef enum {INPUT, OUTPUT} testState;
 
@@ -59,20 +61,31 @@ void run(void)
     testState t = INPUT;
     buttonState outButton = UP;
     buttonState resetButton = UP;
+    char read[100];
+    char* newline = "\r\n";
     while (1)
     {
+        char* input = "Please enter a wheel speed (3 Digits):\t";
+        SCIwrite(SCI_DEBUG_BASE, (uint16_t *) input, strlen(input));
+        SCIread(SCI_DEBUG_BASE, (uint16_t *) read, 3);
+        SCIwrite(SCI_DEBUG_BASE, (uint16_t *) read, 3);
+        SCIwrite(SCI_DEBUG_BASE, (uint16_t *) newline, strlen(newline));
+        int bSwitch = atoi(read);
         //Should tactile buttons be used for Brake Switches, Profile Switches, and Throttle Closed Switch?
         //Wheel Speed sensor 2 pwm signals or just one?
         //I just need to send data that mimics the IMU not know how to use it right?
         //What measures suspension travel?
         //Whats the plan for a UI
 
-        uint16_t suspensionTravel[2] = {75,0};
+        uint16_t suspensionTravel[2] = {0,0};
         uint16_t pSwitches[3] = {0,0,0};
         uint16_t bSwitches[2] = {0,0};
+        uint16_t wSensors[2] = {0,0};
         uint16_t tSwitch = 0;
+
         buttonStateMachine(resetButtonStatus, &resetButton);
         buttonStateMachine(outButtonStatus, &outButton);
+
         switch(t)
         {
         case INPUT:
