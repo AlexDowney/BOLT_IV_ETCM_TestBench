@@ -110,6 +110,9 @@ void run(void)
         //setDACOutputVoltage((150 - suspensionTravel[1]) * (5/150)); //ACTING AS SUSPENSION TRAVEL SENSOR HERE
 
         //Calculate PWM Signal
+        initEPWM1(2*(wSensors[0]*4*40));
+        initEPWM2(2*(wSensors[1]*4*40));
+
         //setCounterCompareAValue1();
         //setCounterCompareAValue2();
         char resetCheck[5];
@@ -135,8 +138,8 @@ void init(void)
     initADC();
     initADCSOC();
 
-    initEPWM1();
-    initEPWM2();
+//    initEPWM1(125000000);
+//    initEPWM2(125000000);
 
     initSCI();
 

@@ -12,10 +12,10 @@
 #ifndef EPWM_ETCM_H_
 #define EPWM_ETCM_H_
 
-void initEPWM1();
+void initEPWM1(unsigned int period);
 void setCounterCompareAValue1(int value);
 
-void initEPWM2();
+void initEPWM2(unsigned int period);
 void setCounterCompareAValue2(int value);
 
 
