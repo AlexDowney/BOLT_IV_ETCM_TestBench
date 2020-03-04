@@ -1,12 +1,14 @@
 import serial
 import sys
 import csv
+import time
 import os
 
 # ****************** Open Serial Port ****************** #
 ser = serial.Serial()
 ser.baudrate = 115200  # int(input("Provide a Baudrate (ex. 9600, 115200, etc.):\t"))
 ser.port = 'COM' + (input("Provide a COM Port (ex. 6, 7, 8, etc.):\t"))
+ser.xonxoff = True
 # ****************** Open Serial Port ****************** #
 
 """
@@ -16,35 +18,36 @@ parity is off
 stop bit is 1
 baud rate is 115200
 """
-if ser.is_open:
 # ****************** CSV Opening ****************** #
-    while True:
-        input_filename = input("Provide a .csv file (ex. input.csv):\t")
-        if os.path.isfile('filename.txt'):
-            input_file = open(input_filename, 'r')
-            break
+while True:
+    input_filename = input("Provide a .csv file (ex. input.csv):\t")
+    if os.path.isfile(input_filename):
+        input_file = open(input_filename, 'r')
+        break
 # ****************** CSV Opening ****************** #
 
 # ****************** CSV Reading & TXT Writing ****************** #
-    with open("BOLT_TestBench_Output.txt", "w") as output_file:
-        for line in input_file.read():
-            line_data = line.split(",")
-            for data in line_data:
-                ser.write(bytes(data))
-                output_file.write(data + "\n")
-            output = ser.read_until("\n").decode("utf-8")
-            output_file.write(output + "\n")
-            output_file.close()
+with open("BOLT_TestBench_Output.txt", "w") as output_file:
+    text = input_file.read()
+    for line in text.splitlines():
+        print(line)
+        line_data = line.split(",")
+        for data in line_data:
+            ser.open()
+            ser.write(data.encode())
+            output_file.write(data)
+            ser.close()
+        output = ser.read_until("\n").decode("utf-8")
+        output_file.write(output + "\n")
 # ****************** CSV Reading & TXT Writing ****************** #
 
 # ****************** Reset Loop ****************** #
-        while True: #We may not need this
-            input("Press enter to continue to next test.....")
-            break
+        # while True: #We may not need this
+        #     input("Press enter to continue to next test.....")
+        #     break
 # ****************** Reset Loop ****************** #
 
     input_file.close()
-ser.close()
 
 """
 Basis for README.txt...
@@ -79,5 +82,3 @@ TS
 TR
 
 """
-
-print(ser)

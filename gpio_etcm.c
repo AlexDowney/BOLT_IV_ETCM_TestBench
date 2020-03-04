@@ -9,12 +9,20 @@
 void initGPIO()
 {
     GPIO_setDirectionMode(67, GPIO_DIR_MODE_OUT);
-    GPIO_writePin(67, 0);
     GPIO_setDirectionMode(111, GPIO_DIR_MODE_OUT);
     GPIO_setDirectionMode(60, GPIO_DIR_MODE_OUT);
     GPIO_setDirectionMode(61, GPIO_DIR_MODE_OUT);
     GPIO_setDirectionMode(123, GPIO_DIR_MODE_OUT);
     GPIO_setDirectionMode(122, GPIO_DIR_MODE_OUT);
+
+    GPIO_writePin(67, 0);
+    GPIO_writePin(111, 0);
+    GPIO_writePin(60, 0);
+    GPIO_writePin(61, 0);
+    GPIO_writePin(123, 0);
+    GPIO_writePin(122, 0);
+
+
 
     GPIO_setPinConfig(GPIO_0_EPWM1A);
     GPIO_setPinConfig(GPIO_2_EPWM2A);
