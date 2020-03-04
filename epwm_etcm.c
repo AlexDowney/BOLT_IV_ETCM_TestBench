@@ -23,7 +23,7 @@ void initEPWM1(unsigned int period)
 }
 void setCounterCompareAValue1(int value)
 {
-    EPWM_setCounterCompareValue(EPWM1_BASE, EPWM_COUNTER_COMPARE_A, period);
+    EPWM_setCounterCompareValue(EPWM1_BASE, EPWM_COUNTER_COMPARE_A, value);
 }
 void initEPWM2(unsigned int period)
 {
