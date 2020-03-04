@@ -16,7 +16,7 @@ parity is off
 stop bit is 1
 baud rate is 115200
 """
-if ser.is_open():
+if ser.is_open:
 # ****************** CSV Opening ****************** #
     while True:
         input_filename = input("Provide a .csv file (ex. input.csv):\t")
@@ -26,22 +26,21 @@ if ser.is_open():
 # ****************** CSV Opening ****************** #
 
 # ****************** CSV Reading & TXT Writing ****************** #
-    for line in input_file:
-        line_data = line.split(",")
-        output_file = open("BOLT_TestBench_Output.txt", 'wt')
-        for data in line_data:
-            ser.write(bytes(data))
-            output_file.write(data + "\n")
-        output = ser.read_until("\n").decode("utf-8")
-        output_file.write(output + "\n")
-        output_file.close()
+    with open("BOLT_TestBench_Output.txt", "w") as output_file:
+        for line in input_file.read():
+            line_data = line.split(",")
+            for data in line_data:
+                ser.write(bytes(data))
+                output_file.write(data + "\n")
+            output = ser.read_until("\n").decode("utf-8")
+            output_file.write(output + "\n")
+            output_file.close()
 # ****************** CSV Reading & TXT Writing ****************** #
 
 # ****************** Reset Loop ****************** #
-        while True:
-            reset_key = input("type reset to reset:\t")
-            if reset_key == "reset":
-                break
+        while True: #We may not need this
+            input("Press enter to continue to next test.....")
+            break
 # ****************** Reset Loop ****************** #
 
     input_file.close()
@@ -55,8 +54,11 @@ FW Sp -> Front Wheel Speed
 BW Sp -> Back Wheel Speed
 FW Sus -> Front Wheel Suspension
 BW Sus -> Back Wheel Suspension
-BS1 -> Break Switch 1
-BS2 -> Break Switch 2
+BS1 -> Brake Switch 1
+BS2 -> Brake Switch 2
+PS1 -> Profile Switch 1
+PS2 -> Profile Switch 2
+PS3 -> Profile Switch 3
 TS -> Throttle Switch
 TR -> Throttle Request
 
@@ -70,6 +72,9 @@ FW Sus
 BW Sus
 BS1
 BS2
+PS1
+PS2
+PS3
 TS
 TR
 

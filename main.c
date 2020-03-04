@@ -58,43 +58,40 @@ void main(void)
 
 void run(void)
 {
-    //ADCINA0/DACOUTA - J3 30
-    testState t = INPUT;
-    buttonState outButton = UP;
-    buttonState resetButton = UP;
     char read[5];
+    char write[10];
     while (1)
     {
-        uint16_t suspensionTravel[2] = {0,0}; // {front, back}
+        //Resetting Values
+        uint16_t suspensionTravel[2] = {0,0};
         uint16_t pSwitches[3] = {0,0,0};
         uint16_t bSwitches[2] = {0,0};
         uint16_t wSensors[2] = {0,0};
         uint16_t tSwitch = 0;
 
-        getInput("Please enter a wheel speed (3 Digits):\t", read, 3);
+        //Read in values from serial
+        SCIread(SCI_DEBUG_BASE, (uint16_t *) read, 3); //Front Wheel Speed
         wSensors[0] = atoi(read);
-        getInput("Please enter a wheel speed (3 Digits):\t", read, 3);
+        SCIread(SCI_DEBUG_BASE, (uint16_t *) read, 3); //Rear Wheel Speed
         wSensors[1] = atoi(read);
-
-        getInput("Please enter a front wheel suspension value (3 Digits):\t", read, 3);
+        SCIread(SCI_DEBUG_BASE, (uint16_t *) read, 3); //Front Susp Travel
         suspensionTravel[0] = atoi(read);
-        getInput("Please enter a back wheel suspension value (3 Digits):\t", read, 3);
+        SCIread(SCI_DEBUG_BASE, (uint16_t *) read, 3); //Rear Susp Travel
         suspensionTravel[1] = atoi(read);
-
-        getInput("Please enter a break value (1 or 0):\t", read, 1);
+        SCIread(SCI_DEBUG_BASE, (uint16_t *) read, 1); //Front Brake
         bSwitches[1] = atoi(read);
-        getInput("Please enter a break value (1 or 0):\t", read, 1);
+        SCIread(SCI_DEBUG_BASE, (uint16_t *) read, 1); //Back Brake
         bSwitches[1] = atoi(read);
-
-        getInput("Please enter a throttle (1 or 0):\t", read, 1);
+        SCIread(SCI_DEBUG_BASE, (uint16_t *) read, 1); //Profile 1
+        pSwitches[0] = atoi(read);
+        SCIread(SCI_DEBUG_BASE, (uint16_t *) read, 1); //Profile 2
+        pSwitches[1] = atoi(read);
+        SCIread(SCI_DEBUG_BASE, (uint16_t *) read, 1); //Profile 3
+        pSwitches[2] = atoi(read);
+        SCIread(SCI_DEBUG_BASE, (uint16_t *) read, 1); //Throttle
         tSwitch = atoi(read);
 
-        //Should tactile buttons be used for Brake Switches, Profile Switches, and Throttle Closed Switch?
-        //Wheel Speed sensor 2 pwm signals or just one?
-        //I just need to send data that mimics the IMU not know how to use it right?
-        //What measures suspension travel?
-        //Whats the plan for a UI
-
+        //Set Values on Pins
         GPIO_writePin(67, pSwitches[0]); //Profile Switches (J1 5,6,7)
         GPIO_writePin(111, pSwitches[1]);
         GPIO_writePin(60, pSwitches[2]);
@@ -104,25 +101,18 @@ void run(void)
 
         GPIO_writePin(122, tSwitch); //Throttle Closed Switch (J2 17)
 
-        float request = (150 - suspensionTravel[0]) * (3.0/150);
-
-        setDACOutputVoltage(request); //ACTING AS SUSPENSION TRAVEL SENSOR HERE
-        //setDACOutputVoltage((150 - suspensionTravel[1]) * (5/150)); //ACTING AS SUSPENSION TRAVEL SENSOR HERE
+        setDACOutputVoltage(DACA_BASE, (150 - suspensionTravel[0]) * (3.0/150)); //Suspension Travel (J3 30)
+        setDACOutputVoltage(DACB_BASE, (150 - suspensionTravel[1]) * (3.0/150)); //Suspension Travel (J7 70)
 
         //Calculate PWM Signal
-        initEPWM1(2*(wSensors[0]*4*40));
-        initEPWM2(2*(wSensors[1]*4*40));
+        initEPWM1(2*(wSensors[0]*4*40)); //Front Wheel Speed (J4 40)
+        initEPWM2(2*(wSensors[1]*4*40)); //Rear Wheel Speed  (J4 38)
 
-        //setCounterCompareAValue1();
-        //setCounterCompareAValue2();
-        char resetCheck[5];
-        char reset[5] = "reset";
-        while (strcmp(resetCheck, reset) != 0)
-        {
-            getInput("Type reset to reset:\t", resetCheck, 5);
-            int a = strcmp(resetCheck, reset);
-            int b = 1;
-        }
+        unsigned int motor_request = getADCVal(); //(J3 29)
+
+        /* convert ADC val to char */
+        SCIwrite(SCI_DEBUG_BASE, (uint16_t *) write, 10);
+
     }
 }
 //Initialize, runs all initialization functions
@@ -138,12 +128,10 @@ void init(void)
     initADC();
     initADCSOC();
 
-//    initEPWM1(125000000);
-//    initEPWM2(125000000);
-
     initSCI();
 
-    initDAC();
+    initDAC(DACA_BASE);
+    initDAC(DACB_BASE);
 
     addInterrupt(&cpuTimer0ISR, INT_TIMER0);
     initTimer(CPUTIMER0_BASE, 5000, 0);
@@ -171,7 +159,6 @@ __interrupt void cpuTimer0ISR(void)
 void getInput(char* prompt, char* in, unsigned int length){
     char* newline = "\r\n";
     SCIwrite(SCI_DEBUG_BASE, (uint16_t *) prompt, strlen(prompt));
-    SCIread(SCI_DEBUG_BASE, (uint16_t *) in, length);
     SCIwrite(SCI_DEBUG_BASE, (uint16_t *) in, length);
     SCIwrite(SCI_DEBUG_BASE, (uint16_t *) newline, strlen(newline));
 }

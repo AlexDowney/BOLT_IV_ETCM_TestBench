@@ -36,7 +36,7 @@ void initADCSOC(void)
 //    ADC_setupSOC(ADCA_BASE, ADC_SOC_NUMBER0, ADC_TRIGGER_CPU1_TINT0,
 //                 ADC_CH_ADCIN0, 15);
     ADC_setupSOC(ADC_BASE, ADC_SOC_NUMBER0, ADC_TRIGGER_SW_ONLY,
-                 ADC_CH_ADCIN0, 15);
+                 ADC_CH_ADCIN2, 15);
     ADC_setInterruptSource(ADC_BASE, ADC_INT_NUMBER1, ADC_SOC_NUMBER0);
     ADC_enableInterrupt(ADC_BASE, ADC_INT_NUMBER1);
     ADC_clearInterruptStatus(ADC_BASE, ADC_INT_NUMBER1);
