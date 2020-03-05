@@ -42,6 +42,7 @@ char resetButtonStatus = 0x0000;
 
 //Function Prototypes.
 void init(void);
+int myPow(int base, int c);
 void run(void);
 void initLookup(void);
 __interrupt void cpuTimer0ISR(void);
@@ -58,16 +59,16 @@ void main(void)
 
 void run(void)
 {
-    char read[3];
-    char write[10];
+    char read[4] = {'0','0','0','\0'};
+    char write[11] = {'0','0','0','0','0','0','0','0','0','0','\n'};
     while (1)
     {
         //Resetting Values
-        uint16_t suspensionTravel[2] = {0,0};
-        uint16_t pSwitches[3] = {0,0,0};
-        uint16_t bSwitches[2] = {0,0};
-        uint16_t wSensors[2] = {0,0};
-        uint16_t tSwitch = 0;
+        int suspensionTravel[2] = {0,0};
+        int pSwitches[3] = {0,0,0};
+        int bSwitches[2] = {0,0};
+        int wSensors[2] = {0,0};
+        int tSwitch = 0;
 
         //Read in values from serial
         SCIread(SCI_DEBUG_BASE, (uint16_t *) read, 3); //Front Wheel Speed
@@ -79,7 +80,7 @@ void run(void)
         SCIread(SCI_DEBUG_BASE, (uint16_t *) read, 3); //Rear Susp Travel
         suspensionTravel[1] = atoi(read);
 
-        char oneBit[1];
+        char oneBit[1] = {'0'};
         SCIread(SCI_DEBUG_BASE, (uint16_t *) oneBit, 1); //Front Brake
         bSwitches[0] = atoi(oneBit);
         SCIread(SCI_DEBUG_BASE, (uint16_t *) oneBit, 1); //Back Brake
@@ -110,12 +111,29 @@ void run(void)
         initEPWM1(2*(wSensors[0]*4*40)); //Front Wheel Speed (J4 40)
         initEPWM2(2*(wSensors[1]*4*40)); //Rear Wheel Speed  (J4 38)
 
-        unsigned int motor_request = getADCVal(); //(J3 29)
+        int motor_request = getADCVal(); //(J3 29)
+
+        unsigned int c = 0;
+        while (c < 10)
+        {
+            write[9 - c] = (motor_request % 10) + 48;
+            motor_request /= 10;
+            c++;
+        }
 
         /* convert ADC val to char */
-        SCIwrite(SCI_DEBUG_BASE, (uint16_t *) write, 10);
+        SCIwrite(SCI_DEBUG_BASE, (uint16_t *) write, strlen(write));
 
     }
+}
+int myPow(int base, int c)
+{
+    unsigned int a = 0;
+    for (a = 1; a < c; a++)
+    {
+        base *= base;
+    }
+    return base;
 }
 //Initialize, runs all initialization functions
 void init(void)

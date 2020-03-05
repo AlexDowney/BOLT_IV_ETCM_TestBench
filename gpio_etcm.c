@@ -23,7 +23,6 @@ void initGPIO()
     GPIO_writePin(122, 0);
 
 
-
     GPIO_setPinConfig(GPIO_0_EPWM1A);
     GPIO_setPinConfig(GPIO_2_EPWM2A);
 

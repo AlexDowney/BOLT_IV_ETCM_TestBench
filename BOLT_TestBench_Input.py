@@ -32,20 +32,21 @@ with open("BOLT_TestBench_Output.txt", "w") as output_file:
     for line in text.splitlines():
         print(line)
         line_data = line.split(",")
-        for data in line_data:
+        for i in range(0, len(line_data)):
             ser.open()
+            data = line_data[i]
             ser.write(data.encode())
-            output_file.write(data)
-            ser.close()
-        output = ser.read_until("\n").decode("utf-8")
-        output_file.write(output + "\n")
+            output_file.write(data + "\n")
+            if (i != len(line_data) - 1):
+                ser.close()
+        while (ser.in_waiting == 0):
+            print("Waiting for output from C2000.........")
+            time.sleep(2)
+        output = int(ser.read(11).decode("utf-8"))
+        print(str(output))
+        ser.close()
+        output_file.write(str(output) + "\n\n")
 # ****************** CSV Reading & TXT Writing ****************** #
-
-# ****************** Reset Loop ****************** #
-        # while True: #We may not need this
-        #     input("Press enter to continue to next test.....")
-        #     break
-# ****************** Reset Loop ****************** #
 
     input_file.close()
 
