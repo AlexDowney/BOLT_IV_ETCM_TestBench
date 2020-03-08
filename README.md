@@ -13,8 +13,8 @@ To create a CSV for inputting into the C2000, follow the list of columns below
 
         - Front Wheel Speed (RPM, 3 Digits, 0 - 459)
         - Back Wheel Speed (RPM, 3 Digits, 0 - 459)
-        - Front Wheel Suspension (cm, 3 Digits, 0 - 150)
-        - Back Wheel Suspension (cm, 3 Digits, 0 - 150)
+        - Front Wheel Suspension (cm, 3 Digits, 0 - 150) -> This only goes up to 3V
+        - Back Wheel Suspension (cm, 3 Digits, 0 - 150) -> This only goes up to 3V
         - Front Brake Switch 1 (1 or 0)
         - Back Brake Switch 2 (1 or 0)
         - Profile Switch 1 (1 or 0)
@@ -28,3 +28,7 @@ BOLT_TestBench_Input.py and follow the prompts. (COM port, and input file).
 The script will then send serial values to the C2000 and wait for a return value. This data will
 print the values sent to the C2000 with the value received from the C2000 below it to a file named
 **BOLT_TestBench_Output.txt**
+
+Note: For some reason if you stop the python script in the middle of execution, you have to reflash
+to the board before running again or the code will hang (I think because the UART buffer is still)
+waiting. Let the entire python script run and you shouldn't have any issues

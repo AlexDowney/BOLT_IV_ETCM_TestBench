@@ -111,18 +111,27 @@ void run(void)
         initEPWM1(2*(wSensors[0]*4*40)); //Front Wheel Speed (J4 40)
         initEPWM2(2*(wSensors[1]*4*40)); //Rear Wheel Speed  (J4 38)
 
-        int motor_request = getADCVal(); //(J3 29)
+        uint16_t throttle_input = getADCVal(ADCB_BASE, ADCBRESULT_BASE, ADC_SOC_NUMBER1, ADC_SOC_NUMBER2, ADC_INT_NUMBER1); //(J3 25)
+        uint16_t motor_request = getADCVal(ADCA_BASE, ADCARESULT_BASE, ADC_SOC_NUMBER1, ADC_SOC_NUMBER2, ADC_INT_NUMBER1); //(J3 29)
 
         unsigned int c = 0;
+        while (c < 10)
+        {
+            write[9 - c] = (throttle_input % 10) + 48;
+            throttle_input /= 10;
+            c++;
+        }
+        SCIwrite(SCI_DEBUG_BASE, (uint16_t *) write, strlen(write));
+
+        c = 0;
         while (c < 10)
         {
             write[9 - c] = (motor_request % 10) + 48;
             motor_request /= 10;
             c++;
         }
-
-        /* convert ADC val to char */
         SCIwrite(SCI_DEBUG_BASE, (uint16_t *) write, strlen(write));
+        /* convert ADC val to char */
 
     }
 }
@@ -145,8 +154,10 @@ void init(void)
 
     initGPIO();
 
-    initADC();
-    initADCSOC();
+    initADC(ADCA_BASE);
+    initADC(ADCB_BASE);
+    initADCSOC(ADCA_BASE, ADC_CH_ADCIN2, ADC_SOC_NUMBER1, ADC_SOC_NUMBER2, ADC_INT_NUMBER1);
+    initADCSOC(ADCB_BASE, ADC_CH_ADCIN3, ADC_SOC_NUMBER1, ADC_SOC_NUMBER2, ADC_INT_NUMBER1);
 
     initSCI();
 

@@ -20,7 +20,7 @@ void initDAC(uint32_t base)
     DAC_setReferenceVoltage(base, DAC_REF_ADC_VREFHI);
     // Enable output
     DAC_enableOutput(base);
-    //DAC_tuneOffsetTrim(DAC_BASE_ADDRESS, DAC_VREF);
+    DAC_tuneOffsetTrim(base, DAC_VREF);
     // Set the DAC shadow output to 0
     DAC_setShadowValue(base, 0);
 
@@ -31,7 +31,7 @@ void initDAC(uint32_t base)
 }
 
 void setDACOutputRaw(uint32_t base, uint16_t request) {
-    DAC_setShadowValue(DAC_BASE_ADDRESS, request);
+    DAC_setShadowValue(base, request);
     DEVICE_DELAY_US(2);
 }
 

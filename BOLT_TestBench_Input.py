@@ -4,6 +4,9 @@ import csv
 import time
 import os
 
+dataNames = ['Front Wheel Speed', 'Rear Wheel Speed', 'Front Suspension', 'Rear Suspension',
+                      'Brake Switch 1', 'Brake Switch 2', 'No TC', 'Low TC', 'High TC',
+                      'Throttle Switch']
 # ****************** Open Serial Port ****************** #
 ser = serial.Serial()
 ser.baudrate = 115200  # int(input("Provide a Baudrate (ex. 9600, 115200, etc.):\t"))
@@ -36,16 +39,22 @@ with open("BOLT_TestBench_Output.txt", "w") as output_file:
             ser.open()
             data = line_data[i]
             ser.write(data.encode())
-            output_file.write(data + "\n")
+            output_file.write(dataNames[i] + ": " + data + "\n")
             if (i != len(line_data) - 1):
                 ser.close()
         while (ser.in_waiting == 0):
-            print("Waiting for output from C2000.........")
-            time.sleep(2)
+            print("Waiting for Throttle Input from C2000.........")
+            time.sleep(1)
         output = int(ser.read(11).decode("utf-8"))
         print(str(output))
+        output_file.write("Throttle Input: " + str(output) + "\n")
+        while (ser.in_waiting == 0):
+            print("Waiting for ETCM Request from C2000.........")
+            time.sleep(1)
+        output = int(ser.read(11).decode("utf-8"))
+        print(str(output))
+        output_file.write("ETCM Request: " + str(output) + "\n\n")
         ser.close()
-        output_file.write(str(output) + "\n\n")
 # ****************** CSV Reading & TXT Writing ****************** #
 
     input_file.close()
