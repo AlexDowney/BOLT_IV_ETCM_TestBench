@@ -32,3 +32,5 @@ print the values sent to the C2000 with the value received from the C2000 below 
 Note: For some reason if you stop the python script in the middle of execution, you have to reflash
 to the board before running again or the code will hang (I think because the UART buffer is still)
 waiting. Let the entire python script run and you shouldn't have any issues
+
+**The pin mappings are in the main file next to the sensor or switch that they model**
